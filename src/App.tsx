@@ -1,24 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { add, remove } from "./features/todoSlice";
+import { useAppDispatch, useAppSelector } from "./store";
+
 
 function App() {
+  const todos = useAppSelector (state => state.todos);
+  const [title, setTitle] = useState ("")
+
+  const dispatch = useAppDispatch();
+
+  const onSave = () => {
+    dispatch(add(title));
+    setTitle("");
+  };
+
+  const onDelete = (id: string) => {
+    dispatch(remove(id))
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+       <input 
+       name="title" 
+       value={title} 
+       onChange={(e) => setTitle(e.currentTarget.value)} 
+       />
+       <button onClick={onSave}>Save</button>
+        <ul>
+          {todos.map((todo) => (
+           <li key={todo.id}>
+           <button onClick={() => onDelete(todo.id)}>Delete</button>
+           <span>{todo.title}</span>  
+            </li>
+            ))}
+        </ul>
     </div>
   );
 }
